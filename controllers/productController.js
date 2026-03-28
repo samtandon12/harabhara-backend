@@ -15,11 +15,19 @@ const getProducts = async (req, res) => {
 // @route   POST /api/products
 const addProduct = async (req, res) => {
   try {
-    const { name, price, image, category, inStock } = req.body;
+    const { name, sizes, image, category, inStock } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ message: 'Product name is required' });
+    }
+
+    if (!sizes || !Array.isArray(sizes) || sizes.length === 0) {
+      return res.status(400).json({ message: 'At least one size is required' });
+    }
 
     const product = new Product({
       name,
-      price,
+      sizes,
       image,
       category,
       inStock
@@ -37,11 +45,18 @@ const addProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, image, category, inStock } = req.body;
+    const { name, sizes, image, category, inStock } = req.body;
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (sizes && Array.isArray(sizes)) updateData.sizes = sizes;
+    if (image !== undefined) updateData.image = image;
+    if (category !== undefined) updateData.category = category;
+    if (inStock !== undefined) updateData.inStock = inStock;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
-      { name, price, image, category, inStock },
+      updateData,
       { new: true, runValidators: true }
     );
 
