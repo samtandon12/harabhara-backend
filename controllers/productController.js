@@ -6,8 +6,9 @@ const getProducts = async (req, res) => {
   try {
     const products = await Product.find({});
     res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error('getProducts error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -17,7 +18,7 @@ const addProduct = async (req, res) => {
   try {
     const { name, sizes, image, category, inStock } = req.body;
 
-    if (!name) {
+    if (!name || typeof name !== 'string') {
       return res.status(400).json({ message: 'Product name is required' });
     }
 
@@ -35,8 +36,9 @@ const addProduct = async (req, res) => {
 
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error('addProduct error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -65,8 +67,9 @@ const updateProduct = async (req, res) => {
     }
 
     res.json(updatedProduct);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error('updateProduct error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -83,8 +86,9 @@ const deleteProduct = async (req, res) => {
     }
 
     res.json({ message: 'Product deleted successfully', id });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error('deleteProduct error:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
